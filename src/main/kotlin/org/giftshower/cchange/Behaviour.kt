@@ -59,32 +59,69 @@ class Behaviour {
                     if(changed < Main().getTesters()[target]!!.money / 3  * -1 && changed > Main().getTesters()[target]!!.money / 3 * -1.7){
                         val transactionAmount = (15..30).random()
                         if(Main().getTesters()[target]!!.money - Main().getProduct().value * transactionAmount > 0){
-                            transact(transactionAmount, target)
+                            transactBuy(transactionAmount, target)
                             Main().getPrePredict()[target] = 2
                         } else {
-                            transact(1, target)
+                            transactBuy(1, target)
                             Main().getPrePredict()[target] = 1
                         }
                     } else if(changed > Main().getTesters()[target]!!.money / 3 * -1.4 && changed < 0 ) {
                         val transactionAmount = (12..25).random()
                         if(Main().getTesters()[target]!!.money - Main().getProduct().value * transactionAmount > 500){
-                            transact(transactionAmount, target)
+                            transactBuy(transactionAmount, target)
                             Main().getPrePredict()[target] = 1
                         } else {
-                            transact(1, target)
+                            transactBuy(1, target)
                             Main().getPrePredict()[target] = 0
                         }
                     }
                 }
                 else {
                     //Up-Down Prediction
+                    if(changed > Main().getTesters()[target]!!.money / 3 * 1.5){ //Up-Down Big
+                        val have = Main().getTesters()[target]!!.productHolding
+                        val transactionAmount = if(have > 30){
+                            (have-20..have-5).random()
+                        } else if(have in 1..29) {
+                            (1..15).random()
+                        } else {
+                            return
+                        }
+                        transactSell(transactionAmount, target)
+                        if(Main().getTesters()[target]!!.money < Main().initBalance / 2) {
+                            Main().getPrePredict()[target] = -2
+                        }
+                        else Main().getPrePredict()[target] = -1
+                    }
 
+                    else if(changed > Main().getTesters()[target]!!.money / 4
+                        && changed < Main().getTesters()[target]!!.money / 3 * 1.5){ //Up-Down Small
+                        val have = Main().getTesters()[target]!!.productHolding
+                        val transactionAmount = if(have > 30){
+                            (have-20..have-10).random()
+                        } else if(have in 1..29) {
+                            (1..10).random()
+                        } else {
+                            return
+                        }
+                        transactSell(transactionAmount, target)
+                        TODO("UD SMALL NOT FINISHED")
+
+                    }
                 }
             }
         }
     }
-    fun transact(transactionAmount: Int, target: Int) {
+    private fun transactBuy(transactionAmount: Int, target: Int) {
         Main().getTesters()[target]!!.money.minus(Main().getProduct().value * transactionAmount)
         Main().getTesters()[target]!!.productHolding.plus(transactionAmount)
     }
+
+    private fun transactSell(transactionAmount: Int, target: Int){
+        val applyTO = Main().getTesters()[target]!!
+        applyTO.money.plus(Main().getProduct().value * transactionAmount)
+        applyTO.productHolding.minus(transactionAmount)
+
+    }
+
 }

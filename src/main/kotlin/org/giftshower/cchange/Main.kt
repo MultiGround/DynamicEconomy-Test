@@ -13,11 +13,10 @@ class Main {
     private val predictor: MutableMap<Int, EconPredict> = mutableMapOf()
     private val prePredict: MutableMap<Int, Int> = mutableMapOf()
     private val product: Product = Product("CardBoard", 1000.0, 1000.0, 1000)
+    val initHoldCount = 60
+    val initBalance = 15000.0
     fun main() {
         val entityCount = 100
-        val initHoldCount = 120
-        val initBalance = 15000.0
-
         var loopCount = 0
         //Initialize testers with init values declared above.
         for(i in 1..entityCount) testerMap[i] = EconAccount(initHoldCount, initBalance)
